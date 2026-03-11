@@ -1,0 +1,26 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!--Блог титров-->
+{% block title %}
+Страница входа
+{% endblock %}
+
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">Страница входа</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+
+{% include 'includes/left_panel.html' %}
+
+{% endblock %}
+
+{% block content %}
+<!--    Ссылка на блок Login-->
+{% include 'includes/user_login.html' %}
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!--Блог титров-->
+{% block title %}
+Страница редактирования профиля пользователя
+{% endblock %}
+
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">Страница редактирования профиля пользователя edit_profile</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+<!--Левая панель-->
+{% include 'includes/left_panel.html' %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Контент страницы -->
+{{ object }}
+<!--    Ссылка на блок User_edit-->
+{% include 'includes/user_edit.html' %}
+{% endblock content %}

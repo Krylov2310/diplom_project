@@ -1,0 +1,82 @@
+{% load static %}
+
+<div class="content_all text-center">
+    <h2>Галерея изображений</h2>
+</div>
+
+<div class="gallery row">
+    {% if galleries %}
+    {% for gallery in galleries %}
+    <div class="col-md-4 col-sm-6 mb-4">
+        <div class="gallery-item card h-100">
+            <!-- Изображение с ссылкой на детальную страницу -->
+            <a href="{% url 'gallery:gallery_detail' gallery.id %}" class="text-decoration-none">
+                <img src="{{ gallery.image.url }}"
+                     alt="{{ gallery.comment|default:'Изображение галереи' }}"
+                     class="card-img-top"
+                     style="height: 200px; object-fit: cover;">
+            </a>
+
+            <!-- Тело карточки -->
+            <div class="card-body">
+                <a href="{% url 'users:profile_detail' gallery.author.id %}" class="text-decoration-none">
+                    {% if gallery.author.first_name and gallery.author.last_name %}
+                    <h6 class="card-title">{{ gallery.author.first_name }} {{ gallery.author.last_name }}</h6>
+                    {% else %}
+                    <h6 class="card-title">{{ gallery.author.username }}</h6>
+                    {% endif %}
+                </a>
+            <div class="content_all">
+                <!-- Комментарий (если есть) -->
+                {% if gallery.comment %}
+                <h4>Комментарий:</h4>
+                <p class="card-text text-muted">{{ gallery.comment|truncatechars:50 }}</p>
+                {% endif %}
+            </div>
+                <br>
+                <!-- Кнопки оценки (только для авторизованных) -->
+                {% if user.is_authenticated and user.id != gallery.author.id %}
+                <div class="rating-buttons d-flex justify-content-center gap-2 mt-2">
+                    <!-- Кнопка лайка -->
+                    <form method="post" action="{% url 'gallery:rate_gallery' gallery.id 'like' %}"
+                          class="d-inline rate-form">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn btn-outline-primary btn-sm like-btn {% if gallery.id in user_ratings_dict %}disabled{% endif %}"
+                                title="Поставить лайк">❤️ {{ gallery.likes_count|default:0 }}
+                        </button>
+                    </form>
+
+                    <!-- Кнопка дизлайка -->
+                    <form method="post" action="{% url 'gallery:rate_gallery' gallery.id 'dislike' %}"
+                          class="d-inline rate-form">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn btn-outline-danger btn-sm dislike-btn {% if gallery.id in user_ratings_dict %}disabled{% endif %}"
+                                title="Поставить дизлайк">👎 {{ gallery.dislikes_count|default:0 }}
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <!-- Статистика рейтингов -->
+                <div class="rating-stats mt-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="likes-count text-success fw-bold">❤️ {{ gallery.likes_count|default:0 }}</span>
+                        <span class="dislikes-count text-danger fw-bold">👎 {{ gallery.dislikes_count|default:0 }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div> <!-- card-body -->
+        </div> <!-- gallery-item -->
+    </div> <!-- col -->
+    {% endfor %}
+    {% else %}
+    <!-- Сообщение, если галерея пуста -->
+    <div class="col-12 text-center py-5">
+        <h4 class="text-muted">Галерея пока пуста</h4>
+        <p>Добавьте первое изображение!</p>
+    </div>
+    {% endif %}
+</div> <!-- row -->
+
+{% include 'includes/list_paginators.html' %}

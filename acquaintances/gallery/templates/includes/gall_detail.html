@@ -1,0 +1,219 @@
+{% load static %}
+
+
+<div class="container mt-4">
+    <div class="gallery-detail">
+        <table class="iksweb">
+            <tr>
+                <td>
+                    <div class="author-info">
+                        <a href="{% url 'users:profile_detail' gallery.author.id %}" class="text-decoration-none">
+                            <h4>Автор: {{ gallery.author.get_full_name|default:gallery.author.username }}</h4>
+                        </a>
+                    </div>
+                </td>
+                <td rowspan="6">
+                    <div>
+                        <a href="{{ gallery.image.url }}" target="_blank">
+                            <div class="image-container">
+                                {% if gallery.image %}
+                                <img src="{{ gallery.image.url }}"
+                                     alt="{{ gallery.comment|default:'Изображение галереи' }}"
+                                     class="gallery-image img-fluid rounded">
+                                {% else %}
+                                <div class="no-image text-center p-3 bg-light text-muted">
+                                    Изображение не загружено
+                                </div>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        {% if gallery.comment %}
+                        <div class="mt-4">
+                            <h4>Комментарий:</h4>
+                            <p>{{ gallery.comment }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                {% if user != gallery.author or not user.is_authenticated %}
+                <td>
+                    <h4 class="mt-4">Оцените это изображение:</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <!-- Форма для лайка -->
+                        <form method="post" action="{% url 'gallery:rate_gallery' gallery.id 'like' %}"
+                              class="d-inline me-2">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-outline-primary btn-lg {% if user_rating == 'like' %}active btn-success{% endif %}"
+                                    title="Поставить лайк">
+                                ❤️ {{ gallery.likes_count }}
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <!-- Форма для дизлайка -->
+                        <form method="post" action="{% url 'gallery:rate_gallery' gallery.id 'dislike' %}"
+                              class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-lg {% if user_rating == 'dislike' %}active btn-danger{% endif %}"
+                                    title="Поставить дизлайк">
+                                👎 {{ gallery.dislikes_count }}
+                            </button>
+                        </form>
+                    </div>
+                </td>
+
+            </tr>
+            {% else %}
+            <tr>
+                <td>
+                    <h5>Рейтинг изображения:</h5>
+                    <p class="likes-count">❤️ Лайков: <span class="count">{{ gallery.likes_count }}</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="dislikes-count">👎 Дизлайков: <span class="count">{{ gallery.dislikes_count }}</span></p>
+                </td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <!-- Сообщение для неавторизованных пользователей -->
+                        {% if not user.is_authenticated %}
+                        <div class="alert alert-info">
+                            Войдите в аккаунт, чтобы оценивать изображения
+                        </div>
+                        {% elif user == gallery.author %}
+                        <div class="alert alert-warning">
+                            Вы не можете оценивать свои фотографии
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="text-center mt-4">
+                        <a href="{% url 'gallery:gallery_list' %}" class="btn btn-secondary">Вернуться к галерее</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="text-center mt-3">
+                        {% if user == gallery.author or not user.is_authenticated %}
+                        <form method="post" action="{% url 'gallery:delete_gallery' gallery.id %}"
+                              onsubmit="return confirm('Вы уверены, что хотите удалить это изображение?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Удалить изображение</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 1200px;
+    }
+
+    .iksweb {
+        width: 100%;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    .author-section {
+        vertical-align: top;
+        width: 30%;
+        padding-right: 20px;
+    }
+
+    .image-section {
+        vertical-align: top;
+        text-align: center;
+    }
+
+    .image-container {
+        max-height: 80vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .gallery-image {
+        max-width: 100%;
+        max-height: 600px;
+        height: auto;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .no-image {
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-style: italic;
+    }
+
+    .rating-buttons .btn {
+        min-width: 120px;
+    }
+
+    /* Стили для активной кнопки (когда пользователь уже поставил оценку) */
+    .btn.active {
+        color: white !important;
+    }
+
+    .btn-success.active {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+
+    .btn-danger.active {
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+    }
+</style>
+
+<script>
+    // Добавляем подтверждение для удаления
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForms = document.querySelectorAll('form[onsubmit*="confirm"]');
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Вы уверены, что хотите удалить это изображение?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>

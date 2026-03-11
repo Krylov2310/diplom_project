@@ -1,0 +1,82 @@
+{% load static %}
+
+{% if ratings_page.has_other_pages %}
+<div style="text-align: center; margin: 30px 0;">
+        <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <!-- Кнопка «Назад» -->
+            {% if ratings_page.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ ratings_page.previous_page_number }}">
+                    ← Назад
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">← Назад</span>
+            </li>
+            {% endif %}
+
+            <!-- Номера страниц -->
+            {% for num in ratings_page.paginator.page_range %}
+            {% if num == ratings_page.number %}
+            <li class="page-item active" aria-current="page">
+                <span class="page-link">{{ num }}</span>
+            </li>
+            {% elif num > ratings_page.number|add:-3 and num < ratings_page.number|add:3 %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            <!-- Кнопка «Вперёд» -->
+            {% if ratings_page.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ ratings_page.next_page_number }}">
+                    Вперёд →
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Вперёд →</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <div class="alert alert-info">
+        Вы ещё не поставили ни одной оценки.
+    </div>
+    </div>
+    {% endif %}
+
+    <style>
+        .pagination {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .page-item {
+            display: inline;
+        }
+        .page-link {
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+        }
+        .page-link:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .filter-form {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>

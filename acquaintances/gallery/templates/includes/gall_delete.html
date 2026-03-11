@@ -1,0 +1,36 @@
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>Подтверждение удаления</h4>
+        </div>
+        <div class="card-body">
+            <p>Вы уверены, что хотите удалить это изображение?</p>
+            {% if gallery.image %}
+            <a href="{{ gallery.image.url }}">
+                <img src="{{ gallery.image.url }}"
+             alt="Изображение для удаления"
+             class="img-fluid mb-3"
+             style="max-height: 200px;">
+                </a>
+        {% endif %}
+        <p><strong>Комментарий:</strong> {{ gallery.comment|default:"Без комментария" }}</p>
+        <p><strong>Автор:</strong> {{ gallery.author.username }}</p>
+
+        <div class="d-flex gap-2 mt-4">
+            <form method="post" action="{% url 'delete_gallery' gallery.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Да, удалить</button>
+            </form>
+            <a href="{% url 'gallery_detail' gallery.id %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

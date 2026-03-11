@@ -1,0 +1,93 @@
+{% load static %}
+
+<div class="content_all text-center">
+{% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            <!-- Кнопка «Назад» -->
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                ← Назад
+            </a>
+        </li>
+            {% else %}
+                <li class="page-item disabled">
+            <span class="page-link">← Назад</span>
+        </li>
+            {% endif %}
+
+            <!-- Номера страниц -->
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active" aria-current="page">
+                <span class="page-link">{{ num }}</span>
+            </li>
+                {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Кнопка «Вперёд» -->
+            {% if page_obj.has_next %}
+                <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                Вперёд →
+            </a>
+        </li>
+            {% else %}
+                <li class="page-item disabled">
+            <span class="page-link">Вперёд →</span>
+        </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Информация о текущей странице -->
+    <div class="text-center text-muted mt-3">
+        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    </div>
+{% endif %}
+</div>
+
+<style>
+    .pagination {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    .page-item {
+        display: inline;
+    }
+    .page-link {
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #007bff;
+        border: 1px solid #007bff;
+        border-radius: 4px;
+    }
+    .page-link:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    .page-item.active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+    }
+    .filter-form {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>

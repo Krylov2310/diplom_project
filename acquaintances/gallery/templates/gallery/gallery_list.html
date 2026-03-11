@@ -1,0 +1,28 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!--Блог титров-->
+{% block title %}
+Галерея
+{% endblock %}
+
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">Галерея</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+
+{% include 'includes/left_panel.html' %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Контент страницы -->
+{{ object }}
+<!--    Ссылка на блок User-->
+{% include 'includes/gall_list.html' %}
+{% endblock content %}

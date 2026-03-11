@@ -1,0 +1,42 @@
+{% load static %}
+
+<!-- Форма входа -->
+<div class="auth-form">
+    <h2>Вход в систему</h2>
+    <form method="post">
+        <div id="form_errors">
+            {% for key, value in form.errors.items %}
+            <strong>{{ value }}</strong>
+            {% endfor %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% if form.username.errors %}
+            <div class="text-danger">{{ form.username.errors }}</div>
+            {% endif %}
+            <div class="mb-3">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {% if form.password.errors %}
+                <div class="text-danger">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="profile-actions">
+        <button type="submit" class="btn btn-primary w-100">Войти</button>
+        </div>
+    </form>
+    <p style="text-align: center; margin-top: 15px;">
+        Нет аккаунта? <a href="/register/" onclick="showSection(‘register’)">Зарегистрируйтесь</a>
+    </p>
+</div>

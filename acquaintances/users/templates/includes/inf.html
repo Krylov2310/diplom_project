@@ -1,0 +1,11 @@
+{% load static %}
+
+<div class="text_info">
+    <h1>{{ user.username|default:"Гость" }}</h1>
+    <div class="schlbki">
+        <p>Вас приветствует компания</p>
+        <p>Микро лаборатории разработки программного обеспечения</p>
+        <p>"Edison & Ko"</p>
+    </div>
+    <p><img class="content-image" src="{% static 'img/logo_ed.png' %}" alt="Edison & Ko"></p>
+</div>

@@ -1,0 +1,32 @@
+{% load static %}
+
+<div class="content_all" style="text-align: center;">
+<h2>Добавить изображение в галерею</h2>
+</div>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">{{ form.comment.label }}</label>
+        {{ form.comment }}
+        {% if form.comment.errors %}
+        <div class="text-danger">{{ form.comment.errors }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">{{ form.image.label }}</label>
+        {{ form.image }}
+        {% if form.image.errors %}
+        <div class="text-danger">{{ form.image.errors }}</div>
+        {% endif %}
+        {% if form.image.help_text %}
+        <small class="form-text text-muted">{{ form.image.help_text }}</small>
+        {% endif %}
+        <div class="profile-actions">
+            <button type="submit" class="btn btn-primary w-100">Загрузить изображение</button>
+        </div>
+        <p style="text-align: center; margin-top: 15px;">
+            <a href="{% url 'gallery:gallery_list' %}" class="btn btn-danger action-btn"
+               style="background-color: #f44336;">Отмена</a>
+        </p>
+    </div>
+</form>

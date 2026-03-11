@@ -1,0 +1,26 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!--Блог титров-->
+{% block title %}
+Регистрация пользователя
+{% endblock %}
+
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">Регистрация пользователя</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+
+{% include 'includes/left_panel.html' %}
+
+{% endblock %}
+
+{% block content %}
+<!--    Ссылка на блок register-->
+{% include 'includes/user_register.html' %}
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% load static %}
+
+{% if user.is_active %}
+<ul>
+    <div class="text_info">
+        <h1>Здравствуйте {{ user.username }}</h1>
+        <h3>Приятного общения и найти спутника своей жизни.</h3>
+
+        <h3>Команда микро лаборатории разработки программного обеспечения</h3>
+        <h3>"Edison & Ko"</h3>
+        <h3>Желает Вам счастья!</h3>
+    </div>
+    <p><img class="content-image" src="{% static 'img/logo_ed.png' %}" alt="Edison & Ko"></p>
+    </div>
+    </div>
+    {% else %}
+    <div class="text_info">
+        <h1>Здравствуй Гость</h1>
+        <h2>Вход только для зарегистрированных пользователей!</h2>
+    </div>
+</ul>
+{% endif %}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Ваш сайт</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<!-- Контент шапки -->
+<header>
+    <div class="header-logo-wrapper">
+        <img width="110" src="{% static 'img/logo_head.png' %}" alt="Логотип Edison & Ko" class="header-logo-img">
+    </div>
+    {% block header %}
+    <div class="logo">Base</div>
+    {% endblock %}
+</header>
+
+<!-- Основной контейнер левой панели -->
+<div class="container">
+    <!-- Боковая панель -->
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            {% block left_panel %}
+<!--            {% include 'includes/left_panel.html' %}-->
+            {% endblock %}
+        </ul>
+    </aside>
+
+    <!-- Контентная область -->
+    <main class="content">
+        <div class="content_all">
+            {% block content %}
+            <!-- Контент страницы -->
+            {% endblock content %}
+        </div>
+    </main>
+</div>
+
+            {% block footer %}
+            <!-- Контент подвала -->
+            {% include 'includes/footer.html' %}
+            {% endblock footer %}
+
+</body>
+</html>
+
+

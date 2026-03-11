@@ -1,0 +1,29 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+
+<!--Блог титров-->
+{% block title %}
+Добавление картинки
+{% endblock %}
+
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">Добавление картинки</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+
+{% include 'includes/left_panel.html' %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Контент страницы -->
+{{ object }}
+<!--    Ссылка на блок User-->
+{% include 'includes/add_form_image.html' %}
+{% endblock content %}

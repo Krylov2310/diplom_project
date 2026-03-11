@@ -1,0 +1,136 @@
+{% load static %}
+
+<!-- Подвал, выровненный с левой колонкой -->
+<main class="content">
+    <div class="footer_all" style="text-align: center;">
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="student" style="text-align: center;">
+                    <h5>Студент: Крылов Эдуард Васильевич, 2026 год.</h5>
+                </div>
+                <div class="footer-logo">
+                    <img src="{% static 'img/logo_ed.png' %}" alt="Edison & Ko"
+                         style="max-width: 150px; height: auto; filter: brightness(0.8);">
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; Synergy University. Все права защищены.</p>
+                    <div class="footer-legal">
+                        <span> | </span>
+                        <a href="https://synergyacademy.ru/">Политика конфиденциальности</a>
+                        <span> | </span>
+                        <a href="https://synergyacademy.ru/catalog?type=professions">Программа обучения</a>
+                        <span> | </span>
+                        <a href="https://alice.yandex.ru/">Дизайн сайта Алиса AI</a>
+                        <span> | </span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</main>
+
+<style>
+    /* Подвал (footer) */
+    .footer {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #e2e8f0;
+    border-top: 1px solid #334155;
+    z-index: 10;
+    }
+
+<!--    .footer_all {-->
+<!--    max-width: auto;-->
+<!--    &lt;!&ndash; margin: 0 auto;&ndash;&gt;-->
+<!--    padding: 20px;-->
+<!--    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);-->
+<!--    border: 2px solid #4fc3f7;-->
+<!--    border-radius: 5px;-->
+<!--    box-shadow:-->
+<!--    0 4px 6px rgba(0, 0, 0, 0.1),-->
+<!--    0 1px 3px rgba(0, 0, 0, 0.08);-->
+<!--    transition: all 0.3s ease;-->
+<!--    }-->
+
+    .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    }
+    .student {
+    text-align: center;
+    }
+    .student h5 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    }
+
+    .footer-logo {
+    display: block;
+    max-width: 150px;
+    height: auto;
+    filter: brightness(0.8);
+    }
+
+    .footer-bottom {
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid #334155;
+    width: 100%;
+    }
+
+    .footer-bottom p {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    }
+
+    .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    text-align: center;
+    }
+
+    .footer-legal a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+    }
+
+    .footer-legal a:hover {
+    color: white;
+    }
+
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 768px) {
+    .footer-content {
+    gap: 15px;
+    }
+
+    .student h5 {
+    font-size: 0.8rem;
+    }
+
+    .footer-logo {
+    max-width: 100px;
+    }
+
+    .footer-legal {
+    gap: 10px;
+    }
+
+    .footer-legal a {
+    font-size: 0.8rem;
+    }
+    }
+</style>

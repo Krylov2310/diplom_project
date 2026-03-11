@@ -1,0 +1,97 @@
+{% load static %}
+
+<h2>Мои друзья ({{ friends.count }})</h2>
+{% if friends %}
+<!-- Раздел карточек -->
+<section>
+    <div class="cards-grid">
+        {% for friend in friends %}
+        <div class="card" style="width: 240px; text-align: center;">
+            <div style="width: 200px; text-align: center;">
+                <div class="content_all">
+                    <div>
+                        <table class="iksweb">
+                            <tr>
+                                <td>
+                                    {% if friend.get_avatar_url %}
+                                    <img src="{{ friend.get_avatar_url }}"
+                                         alt="{{ friend.username }}"
+                                         class="rounded-circle mb-2"
+                                         style="width: 60px; height: 60px;">
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h6>{{ friend.username }}</h6>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        {% if friend.city %}<p class="text-muted">{{ friend.city }}</p>{% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'users:profile_detail' friend.id %}" class="btn btn-primary">Профиль</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-danger btn-sm"
+                                                onclick="removeFriend({{ friend.id }})">
+                                            Удалить из друзей
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<p>У вас пока нет друзей</p>
+{% endif %}
+
+<script>
+function removeFriend(friendId) {
+    if (confirm('Вы уверены, что хотите удалить этого пользователя из друзей?')) {
+        fetch(`/friend/remove/${friendId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                // Перезагружаем страницу после успешного удаления
+                location.reload();
+            } else {
+                alert(data.message || 'Неизвестная ошибка');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка удаления друга:', error);
+            alert('Произошла ошибка при удалении друга. Проверьте консоль.');
+        });
+    }
+}
+</script>
+

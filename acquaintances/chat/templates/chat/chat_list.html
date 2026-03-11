@@ -1,0 +1,26 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!--Блог титров-->
+{% block title %}
+Список чатов
+{% endblock %}
+Employee_list
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">Список чатов</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+{% if user.is_active %}
+{% include 'includes/left_panel.html' %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Контент страницы -->
+    {% include 'includes/ch_list.html' %}
+{% endblock content %}

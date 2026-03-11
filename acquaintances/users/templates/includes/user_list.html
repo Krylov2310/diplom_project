@@ -1,0 +1,162 @@
+{% load static %}
+
+<body>
+{% include 'includes/user_sorted.html' %}
+
+<div class="content_all" style="text-align: center;">
+    <h2>Карточки пользователей, всего в базе — {{ num_employees }} человек.</h2>
+</div>
+
+<!-- Раздел карточек -->
+<section>
+    <div class="cards-grid">
+        {% for user in object_list %}
+        <a href="/profile/{{ user.id }}" class="card-link" style="text-decoration: none;">
+            <div class="card">
+                <div style="text-align: center;">
+                    <div class="content_all">
+                        {% if user.avatar_gallery_image %}
+                        <img src="{{ user.avatar_gallery_image.image.url }}"
+                             class="circular-avatar"
+                             alt="Аватар {{ user.username }}">
+                        {% else %}
+                        <img class="circular-avatar" src="{% static 'img/default.jpg' %}" alt="{{ user.username }}">
+                        {% endif %}
+                        <h3>@{{ user.username }}</h3>
+                        {% if user.last_name or user.first_name %}
+                        <h3>Ф.И.О.: {{ user.last_name }} {{ user.first_name }}
+                            {% if user.patronymic %} {{ user.patronymic }}{% endif %}</h3>
+                        {% endif %}
+                        <h3>Email: {{ user.email }}</h3>
+                        <h3>Город: {{ user.city }}</h3>
+                        <h3>Возраст: {{ user.age }}</h3>
+                        {% comment %}
+                        <h3>Возраст: {{ user.age }}</h3>
+                        {% endcomment %}
+                        <div class="cards-heading">
+                            <h3>Статус:</h3>
+                            <h3>{{ user.status }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Сотрудники не найдены</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="content_all" style="text-align: center;">
+<!-- Пагинация -->
+{% if is_paginated %}
+<div style="text-align: center; margin: 30px 0;">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}">Назад</a>
+            </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link">{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}">Вперед</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
+<!-- Выбор количества элементов на страницу -->
+<div style="text-align: center; margin: 20px 0;">
+    <label for="per_page"><h3>Показывать на странице:</h3></label>
+    <select id="per_page" onchange="changePerPage(this.value)">
+        {% for option_value in per_page_options %}
+        <option value="{{ option_value }}" {% if per_page == option_value %}selected{% endif %}>{{ option_value }}</option>
+        {% endfor %}
+        <option value="3" {% if per_page == 3 %}selected{% endif %}>3</option>
+    </select>
+</div>
+</div>
+</body>
+<!-- Стили для карточек -->
+<style>
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .circular-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 10px auto;
+    }
+    .content_all {
+        margin: 10px 0;
+    }
+    .cards-heading {
+        background-color: #f8f9fa;
+        padding: 8px;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    .pagination {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    .page-item {
+        display: inline;
+    }
+    .page-link {
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #007bff;
+        border: 1px solid #007bff;
+        border-radius: 4px;
+    }
+    .page-link:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    .filter-form {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>
+
+<script>
+    function changePerPage(value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', value);
+        url.searchParams.set('page', 1); // При смене количества сбрасываем на первую страницу
+        window.location.href = url.toString();
+    }
+</script>

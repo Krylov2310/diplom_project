@@ -1,0 +1,51 @@
+{% load static %}
+
+<div class="content_all">
+    <h2>Мои чаты</h2>
+
+    <!-- Общий чат -->
+    <div class="chat-item p-3 mb-2 border rounded hover-bg-light">
+        <a href="{% url 'chat:chat_detail' public_chat.id %}">
+            <strong>📣 {{ public_chat.name }}</strong>
+        </a>
+    </div>
+
+    <!-- Приватные чаты -->
+    {% if private_chats %}
+    <h3>Приватные чаты с друзьями</h3>
+    {% for chat in private_chats %}
+    <div class="chat-item p-3 mb-2 border rounded hover-bg-light">
+        <a href="{% url 'chat:chat_detail' chat.id %}">
+            <strong>{{ chat.name }}</strong>
+        </a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>У вас пока нет приватных чатов с друзьями.</p>
+    {% endif %}
+</div>
+
+<style>
+    /* Стили для чата */
+.chat-item {
+    transition: background-color 0.2s;
+}
+
+.chat-item:hover {
+    background-color: #f8f9fa;
+}
+
+.message {
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.bg-primary {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+</style>

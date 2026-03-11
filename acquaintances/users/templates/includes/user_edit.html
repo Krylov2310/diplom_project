@@ -1,0 +1,203 @@
+{% load static %}
+
+<body>
+<!-- Карточка профиля с аватаром -->
+<div class="card-body text-center">
+    {% if can_edit %}
+    <table class="iksweb">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <tr>
+                <td colspan="3">
+                    {{ form.non_field_errors }}
+                    <div class="form-group">
+                        <h4>Логин:</h4>
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="2">
+                    <div class="avatar-container mb-3">
+                        <!-- Отображение текущего аватара -->
+                        {% if user.avatar_gallery_image %}
+                        <div class="mb-3">
+                            <label class="form-label">Текущий аватар:</label>
+                            <img src="{{ user.avatar_gallery_image.image.url }}"
+                                 alt="Текущий аватар"
+                                 class="img-thumbnail"
+                                 style="max-height: 100px;">
+                        </div>
+                        {% endif %}
+                        <div class="form-group mb-3">
+                            <label class="form-label">
+                                {{ form.avatar_gallery_image.label }}
+                            </label>
+                            {{ form.avatar_gallery_image }}
+                            {% if form.avatar_gallery_image.errors %}
+                            <div class="text-danger">{{ form.avatar_gallery_image.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Выберите изображение из вашей галереи в качестве аватара</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <h4>Пол:</h4>
+                        {{ form.gender }}
+                        {{ form.gender.errors }}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        {{ form.avatar.label_tag }}
+                        {{ form.avatar }}
+                        {{ form.avatar.errors }}
+                        {% if profile_user.avatar %}
+                        <p>Текущий аватар: <img src="{{ profile_user.avatar.url }}" width="100"></p>
+                        {% endif %}
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <h4>Отчество:</h4>
+                        {{ form.patronymic }}
+                        {{ form.patronymic.errors }}
+                    </div>
+                </td>
+                <td>
+                    <label>Год рождения:</label>
+                    {{ form.birth_year }}
+                    {% if form.birth_year.errors %}
+                    <div class="text-danger">{{ form.birth_year.errors }}
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <h4>Город:</h4>
+                        {{ form.city }}
+                        {{ form.city.errors }}
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <h4>Статус</h4>
+                        {{ form.status }}
+                        {{ form.status.errors }}
+                    </div>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="form-group">
+                        <h4>Хобби:</h4>
+                        {{ form.hobbies }}
+                        {{ form.hobbies.errors }}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="profile-actions">
+                        <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
+                    </div>
+                </td>
+                <td>
+                    <a href="{% url 'users:edit_password' %}" class="btn btn-secondary">Сменить пароль</a>
+                </td>
+                <td>
+                    <a href="{% url 'users:profile_list' %}" class="btn btn-danger">Отмена</a>
+                </td>
+            </tr>
+        </form>
+    </table>
+
+    {% else %}
+    <p>Вы не можете редактировать этот профиль.</p>
+    {% endif %}
+</div>
+</body>
+<style>
+    .form-group {
+  margin-bottom: 20px; /* Отступ между полями формы */
+}
+    .form-group label {
+  display: block; /* Лейбл над полем ввода */
+  margin-bottom: 8px; /* Отступ под лейблом */
+  font-weight: bold; /* Жирный шрифт */
+  font-size: 16px; /* Размер шрифта */
+  color: #333; /* Тёмный цвет текста */
+}
+.form-group textarea,
+.form-group input[type="text"] {
+  width: 100%; /* На всю ширину контейнера */
+  padding: 12px; /* Внутренние отступы (как на картинке) */
+  border: 1px solid #ddd; /* Тонкая светло-серая рамка */
+  border-radius: 8px; /* Закруглённые углы (как на изображении) */
+  background-color: #fff; /* Белый фон */
+  font-family: Arial, sans-serif; /* Шрифт, близкий к изображению */
+  font-size: 16px; /* Размер шрифта как у лейбла */
+  line-height: 1.5; /* Межстрочный интервал */
+  resize: vertical; /* Разрешить изменение высоты textarea */
+  box-sizing: border-box; /* Учитывать padding и border в width */
+  transition: border-color 0.3s ease; /* Плавный переход при фокусе */
+}
+.form-group textarea:focus,
+.form-group input[type="text"]:focus {
+  outline: none; /* Убираем стандартную синюю рамку фокуса */
+  border-color: #ccc; /* Немного выделяем рамку при фокусе */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Лёгкая тень для акцента */
+}
+.form-group .error {
+  color: #d9534f; /* Красный цвет для ошибок */
+  font-size: 14px; /* Чуть меньше основного текста */
+  margin-top: 5px; /* Отступ от поля ввода */
+}
+.form-group textarea {
+  height: 80px; /* Начальная высота поля (можно изменить) */
+}
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ddd; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        .btn:disabled { background: #ccc; cursor: not-allowed;
+        }
+
+.text-danger {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+</style>

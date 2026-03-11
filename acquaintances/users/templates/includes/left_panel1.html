@@ -1,0 +1,24 @@
+{% load static %}
+
+<li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i>  Панель управления</a></li>
+<li><a href="/"><i class="fas fa-home"></i>  Главная</a></li>
+<li><a href="/info/"><i class="fas fa-info"></i>  Информация</a></li>
+{% if user.is_active %}
+<li><a href="/profile/list/"><i class="fas fa-users"></i>  Профили пользователей</a></li>
+<li><a href="{% url 'gallery:gallery_list' %}"><i class="fas fa-image"></i> Галерея</a></li>
+<li><a href="{% url 'gallery:add_images' %}"><i class="fas fa-add"></i>  Добавить фото</a></li>
+<li><a href="{% url 'gallery:user_ratings_history' %}"><i class="fas fa-history"></i>  История</a></li>
+<li><a href="{% url 'friends:friend_requests' %}"><i class="fas fa-message"></i>  Заявки в друзья</a></li>
+<li><a href="{% url 'friends:friends_list' %}"><i class="fas fa-list"></i>  Список друзей</a></li>
+
+<li><a href="{% url 'chat:chat_list' %}"><i class="fas fa-heart"></i>  Список чатов</a></li>
+<li><a href="{% url 'chat:chat_list_user' %}"><i class="fas fa-heart"></i>  Чат</a></li>
+{% endif %}
+{% if user.is_superuser %}
+<li><a href="/api/"><i class="fas fa-circle"></i>  API</a></li>
+<li><a href="/api/token/"><i class="fas fa-circle"></i>  API-Token</a></li>
+<li><a href="/api/token/refresh/"><i class="fas fa-envelope"></i>  API-Token-Refresh</a></li>
+{% endif %}
+
+<li><a href="#settings"><i class="fas fa-cog"></i>  Настройки</a></li>
+<li><a href="/admin/"><i class="fas fa-user"></i>  Админка</a></li>

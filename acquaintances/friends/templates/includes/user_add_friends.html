@@ -1,0 +1,135 @@
+{% load static %}
+
+<h2>Входящие заявки в друзья</h2>
+
+<div id="form_errors">
+    {% for key, value in form.errors.items %}
+    <strong>{{ value }}</strong>
+    {% endfor %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% if pending_requests %}
+<!-- Раздел карточек -->
+<section>
+    <div class="cards-grid">
+        {% for request in pending_requests %}
+        <div class="card" style="width: 240px; text-align: center;">
+            <div style="width: 200px; text-align: center;">
+                <div class="content_all">
+                    <div>
+
+                        <table class="iksweb">
+                            <tr>
+                                <td>
+                                    <strong>@{{ request.from_user.username }}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% if request.from_user.get_avatar_url %}
+                                    <img src="{{ request.from_user.get_avatar_url }}"
+                                         alt="{{ request.from_user.username }}"
+                                         class="rounded-circle"
+                                         style="width: auto; height: 100px;">
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'friends:manage_friend_request' request.id 'accept' %}"
+                                           class="btn btn-primary">Принять</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'friends:manage_friend_request' request.id 'reject' %}"
+                                           class="btn btn-danger btn-sm">Отклонить</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<p>У вас пока нет заявок в друзья</p>
+{% endif %}
+
+<!-- Стили для карточек -->
+<style>
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .circular-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 10px auto;
+    }
+    .content_all {
+        margin: 10px 0;
+    }
+    .cards-heading {
+        background-color: #f8f9fa;
+        padding: 8px;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    .pagination {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    .page-item {
+        display: inline;
+    }
+    .page-link {
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #007bff;
+        border: 1px solid #007bff;
+        border-radius: 4px;
+    }
+    .page-link:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    .filter-form {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>

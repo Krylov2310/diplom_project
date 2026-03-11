@@ -1,0 +1,16 @@
+{% load static %}
+
+<div class="chat-sidebar">
+    <h4>Ваши контакты</h4>
+    <ul class="list-group">
+    {% for friend in friends %}
+        <li class="list-group-item">
+            {{ friend.username }}
+            <button class="btn btn-sm btn-primary float-end"
+                    onclick="startChat({{ friend.id }})">
+                Написать
+            </button>
+        </li>
+    {% endfor %}
+    </ul>
+</div>

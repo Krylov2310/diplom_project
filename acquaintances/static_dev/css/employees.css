@@ -1,0 +1,35 @@
+.employee-card {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.skill-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.description {
+    font-size: 0.9em;
+    color: #666;
+    margin: 5px 0 0 20px;
+}
+
+.profile-actions {
+    margin-top: 20px;
+}
+
+.filter-form {
+    margin-bottom: 20px;
+}
+
+.sorting {
+    margin-bottom: 20px;
+}

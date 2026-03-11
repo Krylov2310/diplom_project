@@ -1,0 +1,40 @@
+{% load static %}
+
+<div class="content_all" style="text-align: center;">
+    <!-- Форма фильтрации -->
+    <form method="get">
+        <table class="iksweb">
+            <tr>
+                <td>
+                    <label for="search">Поиск:</label>
+                    <input type="text" name="search" id="search" value="{{ search_query }}"
+                           placeholder="Имя, логин или email">
+                </td>
+                <td>
+                    <label for="city">Город:</label>
+                    <input type="text" name="city" id="city" value="{{ city_filter }}" placeholder="Введите город">
+                </td>
+                <td>
+                    <label for="age">Возраст:</label>
+                    <input type="text" name="age" id="age" value="{{ age_filter }}" placeholder="Введите возраст">
+                </td>
+                <td>
+                    <label for="gender">Пол:</label>
+                    <select name="gender" id="gender">
+                        <option value="">Все</option>
+                        <option value="M" {% if gender_filter == 'M' %}selected{% endif %}>Мужской</option>
+                        <option value="F" {% if gender_filter == 'F' %}selected{% endif %}>Женский</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <a href="{% url 'users:profile_list' %}">Сбросить</a>
+                </td>
+                <td colspan="2">
+                    <button type="submit">Применить фильтры</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,31 @@
+{% load static %}
+
+<nav class="nav-links">
+    {% if user.is_active %}
+    <a href="/profile/{{ user.id }}/"><i class="fas fa-user"></i> Профиль {{ user.username }}</a>
+    <a href="/logout/"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+    {% else %}
+    <a href="/login/"><i class="fas fa-sign-in-alt"></i> Войти</a>
+    <a href="/register/"><i class="fas fa-sign-in-alt"></i> Регистрация</a>
+    {% endif %}
+</nav>
+<style>
+    .avatar-icon {
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+.user-avatar {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .avatar-icon {
+        width: 32px;
+        height: 32px;
+    }
+}</style>

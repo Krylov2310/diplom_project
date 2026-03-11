@@ -1,0 +1,79 @@
+{% load static %}
+
+<div class="content_all text-center">
+    <h2>Галерея изображений</h2>
+    <!-- Показываем, чьи фотографии просматриваем -->
+    {% if viewed_user_id %}
+        {% with user_id=viewed_user_id %}
+            <p class="text-muted">Фотографии пользователя с ID: {{ user_id }}</p>
+        {% endwith %}
+    {% endif %}
+
+    <a href="{% url 'users:add_images' %}" class="btn btn-primary mb-3">Добавить изображение</a>
+</div>
+
+<div class="gallery row">
+    {% if galleries %}
+        {% for gallery in galleries %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="gallery-item card h-100">
+                    <!-- Изображение с ссылкой на детальную страницу -->
+            <a href="{% url 'users:gallery_detail_user' gallery.id %}" class="text-decoration-none">
+                <img src="{{ gallery.image.url }}"
+                     alt="{{ gallery.comment|default:'Изображение галереи' }}"
+             class="card-img-top"
+             style="height: 200px; object-fit: cover;">
+            </a>
+
+            <!-- Тело карточки -->
+            <div class="card-body">
+                <h6 class="card-title">Автор: {{ gallery.author.username }}</h6>
+
+                <!-- Комментарий (если есть) -->
+                {% if gallery.comment %}
+                    <p class="card-text text-muted">{{ gallery.comment|truncatechars:50 }}</p>
+                {% endif %}
+
+                <!-- Статистика рейтингов -->
+                <div class="rating-stats mt-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="likes-count text-success fw-bold">❤️ {{ gallery.likes_count }}</span>
+                        <span class="dislikes-count text-danger fw-bold">👎 {{ gallery.dislikes_count }}</span>
+            </div>
+        </div>
+
+        <!-- Кнопки оценки (только для авторизованных) -->
+        {% if user.is_authenticated %}
+            <div class="rating-buttons d-flex justify-content-center gap-2 mt-2">
+                <!-- Кнопка лайка -->
+                <form method="post" action="{% url 'users:rate_gallery' gallery.id 'like' %}" class="d-inline rate-form">
+                    {% csrf_token %}
+            <button type="submit"
+            class="btn btn-outline-primary btn-sm like-btn {% if gallery.id in user_ratings_dict %}disabled{% endif %}"
+            title="Поставить лайк">❤️</button>
+        </form>
+
+        <!-- Кнопка дизлайка -->
+        <form method="post" action="{% url 'users:rate_gallery' gallery.id 'dislike' %}" class="d-inline rate-form">
+            {% csrf_token %}
+            <button type="submit"
+            class="btn btn-outline-danger btn-sm dislike-btn {% if gallery.id in user_ratings_dict %}disabled{% endif %}"
+            title="Поставить дизлайк">👎</button>
+        </form>
+    </div>
+    {% else %}
+        <!-- Сообщение для неавторизованных пользователей -->
+        <small class="text-muted mt-2 d-block text-center">Войдите для оценки</small>
+    {% endif %}
+</div> <!-- card-body -->
+</div> <!-- gallery-item -->
+</div> <!-- col -->
+        {% endfor %}
+    {% else %}
+        <!-- Сообщение, если галерея пуста -->
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">Галерея пока пуста</h4>
+            <p>Добавьте первое изображение!</p>
+        </div>
+    {% endif %}
+</div> <!-- row -->

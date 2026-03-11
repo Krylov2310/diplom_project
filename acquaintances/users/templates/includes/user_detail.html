@@ -1,0 +1,327 @@
+{% load static %}
+{% load friendship_extras %}
+
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <h1 class="text-center mb-4">Основная информация @{{ profile_user.username }}</h1>
+                <!-- Горизонтальный контейнер для карточек -->
+                <div class="d-flex flex-wrap justify-content-center gap-4">
+
+                    <!-- Карточка профиля с аватаром -->
+                    <div class="profile-card card mb-4" style="flex: 1; min-width: 300px;">
+                <div class="card-body text-center">
+                    <div class="avatar-container mb-3 d-flex justify-content-center">
+                        {% if profile_user.avatar_gallery_image %}
+                    <!-- Аватар загружен -->
+                    <img src="{{ profile_user.avatar_gallery_image.image.url }}"
+                 alt="Аватар {{ profile_user.get_full_name|default:profile_user.username }}"
+                 class="avatar-image rounded-circle"
+                 style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
+            <!-- Заглушка с инициалами -->
+            <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center"
+             style="width: 150px; height: 150px; background-color: #e9ecef; font-size: 40px; color: #6c757d;">
+            {% with first_initial=profile_user.first_name|first|upper last_initial=profile_user.last_name|first|upper %}
+            {% if first_initial and last_initial %}
+                {{ first_initial }}{{ last_initial }}
+            {% elif first_initial %}
+                {{ first_initial }}
+            {% else %}
+                {{ profile_user.username|first|upper }}
+            {% endif %}
+            {% endwith %}
+            </div>
+            {% endif %}
+        </div>
+        <!-- Имя пользователя -->
+        <h4 class="card-title">{{ profile_user.get_full_name|default:profile_user.username }}</h4>
+        <p class="text-muted">@{{ profile_user.username }}</p>
+                </div>
+                        {% if user.id == profile_user.id %}
+                        <a href="{% url 'users:profile_edit' profile_user.id %}"
+                           class="btn btn-danger">
+                            <i class="fas fa-edit me-2"></i>Редактировать профиль
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'users:profile_list' %}"
+                           class="btn btn-danger">
+                            <i class="fas fa-times me-2"></i>Закрыть
+                        </a>
+                    </div>
+
+<!-- Основная информация профиля -->
+<div class="info-card card mb-4" style="flex: 1; min-width: 300px;">
+    <div class="card-body">
+        <h3>Основная информация</h3>
+        <div class="profile-info">
+            <p><strong>📧 Email:</strong> {{ profile_user.email }}</p>
+            <p><strong>👨‍🦰 Имя:</strong> {{ profile_user.last_name|default:"Не указано" }}</p>
+            <p><strong>👩‍🦱 Фамилия:</strong> {{ profile_user.first_name|default:"Не указано" }}</p>
+            <p><strong>👦 Отчество:</strong> {{ profile_user.patronymic|default:"Не указано" }}</p>
+            <p><strong>🚹 Пол:</strong> {{ profile_user.get_gender_display|default:"Не указан" }}</p>
+            <p><strong>🎂 Год рождения:</strong> {{ profile_user.birth_year|default:"Не указан" }}</p>
+            <p><strong>👤 Возраст:</strong> {{ profile_user.age|default:"Не указан" }}</p>
+            <p><strong>📍 Город:</strong> {{ profile_user.city|default:"Не указан" }}</p>
+            <p><strong>🎨 Хобби:</strong> {{ profile_user.hobbies|default:"Не указаны" }}</p>
+            <p><strong>💬 Статус:</strong> {{ profile_user.status|default:"Не задан" }}</p>
+        </div>
+    </div>
+       <div class="card-footer bg-white border-0">
+        {% if is_friend %}
+            <a href="{{ chat_url }}"
+               class="btn btn-success">
+                <i class="fas fa-comment-dots me-2"></i>Написать сообщение
+            </a>
+        {% endif %}
+    </div>
+    <!-- Блок дружбы -->
+    <div class="info-card card mb-4" style="flex: 1; min-width: 300px;">
+        <div class="card-body text-center">
+            <h3>Взаимоотношения</h3>
+            {% if user.is_authenticated and user.id != profile_user.id %}
+            {% if not user|is_friends:profile_user %}
+            <a href="{% url 'friends:send_friend_request' profile_user.id %}"
+               class="btn btn-primary w-100">
+                <i class="fas fa-user-plus me-2"></i>Добавить в друзья
+            </a>
+            {% else %}
+            <div class="alert alert-success mb-0">
+                <i class="fas fa-check-circle me-2"></i>У вас в друзьях
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="text-muted">
+                <i class="fas fa-info-circle me-2"></i>Авторизуйтесь для взаимодействия
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Дополнительная информация -->
+<div class="info-card card mb-4" style="flex: 1; min-width: 300px;">
+    <div class="card-body">
+        <h3>Статистика пользователя</h3>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <strong>🖼️ Изображений:</strong>
+                <span class="stat-value">{{ total_images|default:0 }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>⭐ Поставлено другим:</strong>
+                <span class="stat-value">{{ total_ratings_given|default:0 }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>❤️ Получено лайков:</strong>
+                <span class="stat-value text-success">{{ total_likes_received|default:0 }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>👎 Получено дизлайков:</strong>
+                <span class="stat-value text-danger">{{ total_dislikes_received|default:0 }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-white border-0 d-flex flex-column gap-2">
+        <a href="{% url 'gallery:gallery_user' profile_user.id %}"
+           class="btn btn-primary">
+            <i class="fas fa-images me-2"></i>Фотографии пользователя
+        </a>
+    </div>
+</div>
+
+</div> <!-- Конец горизонтального контейнера -->
+</div>
+</div>
+</div>
+<style>
+    /* Стили для карточек профиля */
+    .profile-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba1 100%);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        color: white;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .avatar-container {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .avatar-image {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        animation: pulse 2s infinite;
+    }
+
+    .avatar-placeholder {
+        font-weight: bold;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    }
+
+    .card-title {
+        color: #000080 !important;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-muted {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    /* Стили для информационных карточек */
+    .info-card {
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        color: #343a40;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .card-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: #667eea;
+        border-radius: 2px;
+    }
+
+    /* Стили для статистики */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .stat-value {
+        display: block;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-top: 0.25rem;
+    }
+
+    /* Кнопки */
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba1 100%) !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4) !important;
+    }
+
+    .btn-success {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+        border-radius: 50px !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+
+    /* Ссылки */
+    a {
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #667eea !important;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-card, .info-card {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+// Дополнительные интерактивные элементы
+document.addEventListener('DOMContentLoaded', function() {
+    // Анимация появления карточек
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+
+    // Эффект наведения для карточек
+    const infoCards = document.querySelectorAll('.info-card');
+    infoCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.15)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+});
+</script>
+</body>

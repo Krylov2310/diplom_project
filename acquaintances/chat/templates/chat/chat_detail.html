@@ -1,0 +1,28 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!--Блог титров-->
+{% block title %}
+{{ chat.name }}
+{% endblock %}
+
+<!--Блог Шапки-->
+{% block header %}
+<div class="logo">{{ chat.name }}</div>
+<!-- Кнопки навигации -->
+{% include 'includes/buttons_header.html' %}
+{% endblock %}
+
+
+{% block left_panel %}
+
+{% include 'includes/left_panel.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<!--    Ссылка на блок-->
+{% include 'includes/ch_detail.html' %}
+{% endblock content %}

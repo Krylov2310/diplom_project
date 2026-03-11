@@ -1,0 +1,194 @@
+{% load static %}
+
+<div>
+    <h2 style="text-align: center;">Чат: {{ chat.name }}, комната №:{{ chat.id }}</h2>
+    <div class="content_all">
+        <div class="messages-container"
+             style="height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+            {% for message in messages %}
+            <div class="message mb-3 p-2 rounded {% if message.sender == request.user %}bg-primary text-white{% else %}bg-light{% endif %}">
+                <strong>
+                    {% if message.sender.last_name or message.sender.first_name %}
+                    <a href="/profile/{{ message.sender.id }}">
+                        {{ message.sender.last_name }} {{ message.sender.first_name }}:
+                    </a>
+                    {% else %}
+                    <a href="/profile/{{ message.sender.id }}">
+                        {{ message.sender.username }}:
+                    </a>
+                    {% endif %}
+                    <small class="text-muted"> {{ message.timestamp|timesince }} назад</small>
+                </strong>
+                <p class="mb-1">{{ message.content }}</p>
+            </div>
+            {% empty %}
+            <p>Пока нет сообщений. Начните разговор!</p>
+            {% endfor %}
+        </div>
+        <form id="message-form" class="d-flex gap-2">
+            {% csrf_token %}
+            <textarea id="message-input" class="form-control" rows="3" placeholder="Введите сообщение..."></textarea>
+            <button type="submit" id="send-button" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Стили для чата */
+.chat-item {
+    transition: background-color 0.2s;
+}
+
+.chat-item:hover {
+    background-color: #f8f9fa;
+}
+
+.message {
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.bg-primary {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const messagesContainer = document.querySelector('.messages-container');
+        const chatId = {{ chat.id }};
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content) {
+                alert('Сообщение не может быть пустым');
+                return;
+            }
+
+            // Блокируем кнопку на время отправки
+            sendButton.disabled = true;
+            sendButton.textContent = 'Отправка...';
+
+            fetch('{% url "chat:send_message" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    content: content
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    messageInput.value = '';
+                    addMessageToChat(data);
+                    // Прокручиваем к последнему сообщению
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка отправки:', error);
+                alert('Произошла ошибка при отправке сообщения. Проверьте консоль.');
+            })
+            .finally(() => {
+                // Всегда разблокируем кнопку
+                sendButton.disabled = false;
+                sendButton.textContent = 'Отправить';
+            });
+        }
+
+        function addMessageToChat(messageData) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message mb-3 p-2 rounded ${messageData.sender === '{{ request.user.username }}' ? 'bg-primary text-white' : 'bg-light'}`;
+
+            messageDiv.innerHTML = `
+                <strong>${messageData.sender}:</strong>
+                <p class="mb-1">${messageData.content}</p>
+                <small class="text-muted">${messageData.formatted_time}</small>
+            `;
+
+            messagesContainer.appendChild(messageDiv);
+        }
+
+        // Обработчик отправки формы
+        document.getElementById('message-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+        // Отправка по Enter (без Shift)
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    });
+
+// Перезапуск страницы при получении сообщения
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatId = {{ chat.id }};
+        let lastMessageCount = document.querySelectorAll('.messages-container .message').length;
+
+        function checkForNewMessages() {
+            fetch(`/chat/${chatId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Создаём временный элемент для парсинга HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+
+                // Считаем количество сообщений в новом HTML
+                const newMessageCount = tempDiv.querySelectorAll('.messages-container .message').length;
+
+                // Если количество сообщений увеличилось — перезагружаем страницу
+                if (newMessageCount > lastMessageCount) {
+                    location.reload();
+                }
+
+                // Обновляем счётчик для следующей проверки
+                lastMessageCount = newMessageCount;
+            })
+            .catch(error => {
+                console.error('Ошибка проверки сообщений:', error);
+            });
+        }
+
+        // Запускаем периодическую проверку каждые 3 секунды
+        setInterval(checkForNewMessages, 3000);
+    });
+
+    // Прокручиваем контейнер сообщений к низу при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const messagesContainer = document.querySelector('.messages-container');
+
+    // Ждём немного, чтобы DOM полностью загрузился и элементы заняли свои места
+    setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 100);
+});
+</script>

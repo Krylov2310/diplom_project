@@ -33,45 +33,45 @@
 ---
 ## Запуск приложения:
 
-### venv\Scripts\activate
+### source venv/bin/activate  # Linux/macOS
+
+### venv\Scripts\activate  # Windows
 
 ### python manage.py runserver
 
 ---
 
+SuperUser имеет доступ к админке и API (данные функции выведены в левую панель)
+
+---
+
 # Тестовые пользователи
 
-> Сотрудник:    Buhgalter_1
+> Пользователь:    Buhgalter_1
 > 
 > Пароль:       12345678Buh$
 > 
 > Email:        mariya@bk.ru
 
-> Сотрудник:    Developer_1 superuser
+> Пользователь:    Developer_1 superuser
 > 
 > Пароль:       12345678Dev$
 > 
 > Email:        denisa@den.ru
  
-> Сотрудник:    Developer_2
-> 
-> Пароль:       12345678Art$
-> 
-> Email:        artem@mail.ru
-
-> Сотрудник:    Frontbencher
+> Пользователь:    Frontbencher
 > 
 > Пароль:       12345678Fr$
 > 
 > Email:        alexm@mail.ru
 
-> Сотрудник:    Pharmaceft
+> Пользователь:    Pharmaceft
 > 
 > Пароль:       12345678Fr1$
 > 
 > Email:        alina@mail.ru
 
-> Сотрудник:    Irina
+> Пользователь:    Irina
 > 
 > Пароль:      12345678Ira@
 > 
